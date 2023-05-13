@@ -3,10 +3,10 @@ import { Configuration, OpenAIApi } from "openai"
 import clientPromise from "../../lib/mongodb"
 
 export default withApiAuthRequired(async function handler(req, res) {
-  const { user } = getSession(req, res)
+  const { user } = await getSession(req, res)
   const client = await clientPromise
   const db = client.db("blogAi")
-  const userProfile = await db.collection("users").updateOne({
+  const userProfile = await db.collection("users").findOne({
     auth0Id: user.sub,
   })
   if (!userProfile?.availableTokens) {
@@ -94,9 +94,9 @@ export default withApiAuthRequired(async function handler(req, res) {
   const metaDescription =
     metaDescriptionResponse.data.choices[0]?.message.content || ""
 
-  console.log("POST CONTENT: ", postContent)
-  console.log("TITLE: ", title)
-  console.log("META DESCRIPTION: ", metaDescription)
+  // console.log("POST CONTENT: ", postContent)
+  // console.log("TITLE: ", title)
+  // console.log("META DESCRIPTION: ", metaDescription)
 
   await db.collection("users").updateOne(
     {
@@ -108,17 +108,17 @@ export default withApiAuthRequired(async function handler(req, res) {
       },
     }
   )
-  const parsed = JSON.parse(response.data.choices[0]?.text.split("\n").join(""))
+  // const parsed = JSON.parse(response.data.choices[0]?.text.split("\n").join(""))
   const post = await db.collection("posts").insertOne({
-    postContent: parsed?.postContent,
-    title: parsed?.title,
-    metaDescription: parsed?.metaDescription,
+    postContent: postContent,
+    title: title,
+    metaDescription: metaDescription,
     topic,
     keywords,
     userId: userProfile._id,
     created: new Date(),
   })
-
+  console.log("post", post)
   // const response = await openAi.createCompletion({
   //   model: "text-davinci-003",
   //   temperature: 0,
@@ -134,14 +134,15 @@ export default withApiAuthRequired(async function handler(req, res) {
   //   }`,
   // })
   // console.log("response", postContentResponse.data.choices[0]?.message.content)
-  res.status(200).json({
-    post: JSON.parse(response.data.choices[0]?.text.split("\n").join("")),
-  })
   // res.status(200).json({
-  //   post: {
-  //     postContent,
-  //     title,
-  //     metaDescription,
-  //   },
+  //   post: JSON.parse(response.data.choices[0]?.text.split("\n").join("")),
   // })
+  res.status(200).json({
+    postId: post.insertedId,
+    // post: {
+    //   postContent,
+    //   title,
+    //   metaDescription,
+    // },
+  })
 })
