@@ -21,20 +21,22 @@ const Applayout = ({ children, availableTokens, posts, postId }) => {
             <span className="pl-1">{availableTokens} tokens availble</span>
           </Link>
         </div>
-        <div className="flex-1 overflow-auto bg-gradient-to-b from-slate-800 to-cyan-800">
+        <div className="px-4 flex-1 overflow-auto bg-gradient-to-b from-slate-800 to-cyan-800">
           {posts.map((post) => {
             return (
               <Link
                 key={post._id}
                 href={`/post/${post._id}`}
-                className="block text-ellipsis overflow-hidden whitespace-nowrap my-1 px-2 bg-white/10 cursor-pointer rounded-sm"
+                className={`py-1 border border-white/0 block text-ellipsis overflow-hidden whitespace-nowrap my-1 px-2 bg-white/10 cursor-pointer rounded-sm ${
+                  postId === post._id ? "bg-white/20 border-white" : ""
+                }`}
               >
                 {post.topic}
               </Link>
             )
           })}
         </div>
-        <div className="bg-cyan-800 flex items-center gap-2 border-t border-black/50 h-20 px-2">
+        <div className="bg-cyan-800 flex items-center gap-2 border-t border-white/30 h-20 px-2">
           {!!user ? (
             <>
               <div className="min-w-[50px]">
