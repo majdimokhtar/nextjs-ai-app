@@ -4,8 +4,8 @@ import { getAppProps } from "../utils/getAppProps"
 
 export default function Success() {
   return (
-    <div>
-      <h1>Thank you for your purchase!</h1>
+    <div className="text-center mt-8">
+      <h1 className="text-3xl font-bold">Thank you for your purchase!</h1>
     </div>
   )
 }

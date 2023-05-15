@@ -15,7 +15,7 @@ export default function PostDetails(props) {
           SEO Title and meta description
         </div>
         <div className="p-4 my-2 border boder-[#FAFAFA] rounded-md">
-          <div className="text-teal-800 text-2xl font-bold">{props.title} </div>
+          <div className="text-[#073b4c] text-2xl font-bold">{props.title} </div>
           <div className="mt-2 ">{props.metaDescription}</div>
         </div>
         <div className="text-sm font-bold mt-6 p-2 bg-[#FAFAFA] rounded-sm">
@@ -24,7 +24,7 @@ export default function PostDetails(props) {
         <div className="flex flex-wrap pt-2 gap-1">
           {props.keywords.split(",").map((keyword, i) => {
             return (
-              <div key={i} className="p-2 rounded-full bg-slate-800 text-white">
+              <div key={i} className="p-2 rounded-full bg-[#0081a7] text-white">
                 <FontAwesomeIcon icon={faHashtag} className="mr-1" />
                 {keyword}
               </div>
