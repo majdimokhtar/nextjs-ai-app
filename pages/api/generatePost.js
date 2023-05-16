@@ -126,7 +126,7 @@ export default withApiAuthRequired(async function handler(req, res) {
     userId: userProfile._id,
     created: new Date(),
   })
-  console.log("post", post)
+  // console.log("post", post)
   // const response = await openAi.createCompletion({
   //   model: "text-davinci-003",
   //   temperature: 0,

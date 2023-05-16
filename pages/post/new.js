@@ -36,7 +36,7 @@ export default function NewPost() {
   return (
     <div className="h-full overflow-hidden">
       {generating && (
-        <div className="text-green-500 flex h-full animate-pulse w-fluss flex-col justify-center items-center">
+        <div className="text-[#38a3a5] flex h-full animate-pulse w-fluss flex-col justify-center items-center">
           <FontAwesomeIcon icon={faBrain} className="text-8xl" />
           <h6>Generating...</h6>
         </div>

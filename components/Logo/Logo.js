@@ -5,7 +5,7 @@ function Logo() {
   return (
     <div className="text-3xl text-center py-4 font-heading">
       BlogAI
-      <FontAwesomeIcon icon={faBrain} className="text-2xl text-slate-400" />
+      <FontAwesomeIcon icon={faBrain} className="text-2xl text-[#57cc99]" />
     </div>
   )
 }

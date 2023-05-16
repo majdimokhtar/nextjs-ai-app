@@ -12,14 +12,22 @@ const Applayout = ({
   availableTokens,
   posts: postsFromSSR,
   postId,
+  postCreated,
 }) => {
   const { user } = useUser()
   // console.log("user:", user)
-  const { setPostsFromSSR, posts, getPosts } = useContext(PostsContext)
+  const { setPostsFromSSR, posts, getPosts, noMorePosts } =
+    useContext(PostsContext)
 
   useEffect(() => {
     setPostsFromSSR(postsFromSSR)
-  }, [postsFromSSR, setPostsFromSSR])
+    if (postId) {
+      const exists = postsFromSSR.find((post) => post._id === postId)
+      if (!exists) {
+        getPosts({ getNewerPosts: true, lastPostDate: postCreated })
+      }
+    }
+  }, [postsFromSSR, setPostsFromSSR, postId, postCreated, getPosts])
 
   return (
     <div className="grid grid-cols-[300px_1fr] h-screen max-h-screen">
@@ -49,14 +57,16 @@ const Applayout = ({
                 </Link>
               )
             })}
-          <div
-            onClick={() => {
-              getPosts({ lastPostDate: posts[posts.length - 1].created })
-            }}
-            className="hover:underline text-sm text-slate-700 text-center cursor-pointer mt-4 font-bold"
-          >
-            Load more posts
-          </div>
+          {!noMorePosts && (
+            <div
+              onClick={() => {
+                getPosts({ lastPostDate: posts[posts.length - 1].created })
+              }}
+              className="hover:underline text-sm text-slate-700 text-center cursor-pointer mt-4 font-bold"
+            >
+              Load more posts
+            </div>
+          )}
         </div>
         <div className="bg-[#00afb9] flex items-center gap-2 border-t border-white/30 h-20 px-2">
           {!!user ? (

@@ -3,7 +3,7 @@ import { UserProvider } from "@auth0/nextjs-auth0/client"
 import { Outfit, Spectral } from "@next/font/google"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { config } from "@fortawesome/fontawesome-svg-core"
-import { PostProvider } from "../context/postContext"
+import { PostsProvider } from "../context/postContext"
 config.autoAddCss = false
 
 const outfit = Outfit({
@@ -22,11 +22,11 @@ function MyApp({ Component, pageProps }) {
   const getLayout = Component.getLayout || ((page) => page)
   return (
     <UserProvider>
-      <PostProvider>
+      <PostsProvider>
         <main className={`${outfit.variable} ${spectral.variable} font-body`}>
           {getLayout(<Component {...pageProps} />, pageProps)}
         </main>
-      </PostProvider>
+      </PostsProvider>
     </UserProvider>
   )
 }
