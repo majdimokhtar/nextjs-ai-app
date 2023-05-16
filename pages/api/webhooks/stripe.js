@@ -1,6 +1,5 @@
 import Cors from "micro-cors"
 import stripeInit from "stripe"
-import verifyStripe from "@webdeveducation/next-verify-stripe"
 import clientPromise from "../../../lib/mongodb"
 
 const cors = Cors({
@@ -14,49 +13,46 @@ export const config = {
 }
 
 const stripe = stripeInit(process.env.STRIPE_SECRET_KEY)
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET
 
 const handler = async (req, res) => {
   if (req.method === "POST") {
-    let event
+    const { paymentIntentId, metadata } = req.body
     try {
-      event = await verifyStripe({
-        req,
-        stripe,
-        endpointSecret,
-      })
-    } catch (error) {
-      console.log("error stripe", error)
-    }
-    switch (event.type) {
-      case "payment_intent.succeeded": {
-        const client = await clientPromise
-        const db = client.db("blogAi")
-        const paymentIntent = event.data.object
-        const auth0Id = paymentIntent.metadata.sub
-        console.log("AUTH 0 ID: ", paymentIntent)
-        const userProfile = await db.collection("users").updateOne(
-          {
+      // Retrieve the payment intent from Stripe
+      const paymentIntent = await stripe.paymentIntents.retrieve(
+        paymentIntentId
+      )
+
+      // Process the payment and update your database accordingly
+      const client = await clientPromise
+      const db = client.db("blogAi")
+      const auth0Id = metadata.sub
+      console.log("AUTH0 ID:", auth0Id)
+      const userProfile = await db.collection("users").updateOne(
+        {
+          auth0Id,
+        },
+        {
+          $inc: {
+            availableTokens: 10,
+          },
+          $setOnInsert: {
             auth0Id,
           },
-          {
-            $inc: {
-              availableTokens: 10,
-            },
-            $setOnInsert: {
-              auth0Id,
-            },
-          },
-          {
-            upsert: true,
-          }
-        )
-      }
+        },
+        {
+          upsert: true,
+        }
+      )
 
-      default:
-        console.log("Unhandled event", event.type)
+      // Return a success response
+      res.status(200).json({ success: true })
+    } catch (error) {
+      console.log("Error processing payment:", error)
+      res.status(500).json({ error: "Payment processing failed" })
     }
-    res.status(200).json({ recieved: true })
+  } else {
+    res.status(405).end() // Method Not Allowed
   }
 }
 
