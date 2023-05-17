@@ -13,7 +13,7 @@ export default function TokenTopUp() {
   }
   return (
     <div className="text-center">
-      <h1 className="text-4xl font-bold mb-4">Token Top-up</h1>
+      <h1 className="text-4xl font-bold mb-4">Upgrade Your Token Balance</h1>
       <p className="text-gray-600 mb-8 text-xl">
         Add tokens to your account to unlock premium features and enhance your
         experience.

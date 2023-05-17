@@ -1,3 +1,4 @@
+
 import Link from "next/link"
 import { useUser } from "@auth0/nextjs-auth0/client"
 import Image from "next/image"
@@ -15,7 +16,7 @@ const Applayout = ({
   postCreated,
 }) => {
   const { user } = useUser()
-  // console.log("user:", user)
+
   const { setPostsFromSSR, posts, getPosts, noMorePosts } =
     useContext(PostsContext)
 
@@ -28,6 +29,7 @@ const Applayout = ({
       }
     }
   }, [postsFromSSR, setPostsFromSSR, postId, postCreated, getPosts])
+  // console.log("posts:", posts)
 
   return (
     <div className="grid grid-cols-[300px_1fr] h-screen max-h-screen">
@@ -57,10 +59,10 @@ const Applayout = ({
                 </Link>
               )
             })}
-          {!noMorePosts && (
+          {!noMorePosts && posts.length >= 5 && (
             <div
               onClick={() => {
-                getPosts({ lastPostDate: posts[posts.length - 1].created })
+                getPosts({ lastPostDate: posts[posts.length - 1]?.created })
               }}
               className="hover:underline text-sm text-slate-700 text-center cursor-pointer mt-4 font-bold"
             >

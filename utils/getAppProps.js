@@ -9,9 +9,16 @@ export const getAppProps = async (ctx) => {
     auth0Id: userSession.user.sub,
   })
 
+  // If user doesn't exist, create a new user with availableTokens set to 10
   if (!user) {
+    const newUser = {
+      auth0Id: userSession.user.sub,
+      availableTokens: 5,
+    }
+    await db.collection("users").insertOne(newUser)
+
     return {
-      availableTokens: 0,
+      availableTokens: newUser.availableTokens,
       posts: [],
     }
   }
