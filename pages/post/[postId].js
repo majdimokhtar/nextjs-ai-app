@@ -8,7 +8,7 @@ import { getAppProps } from "../../utils/getAppProps"
 import { useRouter } from "next/router"
 import { useContext, useState } from "react"
 import PostsContext from "../../context/postContext"
-
+import axios from "axios"
 
 export default function PostDetails(props) {
   // console.log(props,"props")
@@ -18,23 +18,26 @@ export default function PostDetails(props) {
 
   const handleDeleteConfirm = async () => {
     try {
-      const response = await fetch(`/api/deletePost`, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({ postId: props.postId }),
-      })
-      const json = await response.json()
+      const response = await axios.post(
+        "/api/deletePost",
+        { postId: props.postId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      const json = response.data
       if (json.success) {
         deletePost(props.postId)
-        console.log("post deleted")
-        router.replace(`/post/new`)
+        console.log("Post deleted")
+        router.replace("/post/new")
       }
-    } catch (e) {
-      console.log(e , "something went wrong deleting a post")
+    } catch (error) {
+      console.log("Something went wrong deleting a post:", error)
     }
   }
+
   return (
     <div className="overflow-auto h-full">
       <div className="max-w-screen-sm mx-auto">

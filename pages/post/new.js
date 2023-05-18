@@ -5,24 +5,28 @@ import { useRouter } from "next/router"
 import { getAppProps } from "../../utils/getAppProps"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBrain } from "@fortawesome/free-solid-svg-icons"
+import axios from "axios"
 
 export default function NewPost() {
   const router = useRouter()
   const [topic, setTopic] = useState("")
   const [keywords, setKeywords] = useState("")
   const [generating, setGenerating] = useState(false)
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setGenerating(true)
     try {
-      const response = await fetch("/api/generatePost", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({ topic, keywords }),
-      })
-      const json = await response.json()
+      const response = await axios.post(
+        "/api/generatePost",
+        { topic, keywords },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      const json = response.data
       console.log("res", json)
       if (json?.postId) {
         router.push(`/post/${json.postId}`)
@@ -30,9 +34,10 @@ export default function NewPost() {
       // setPostContent(json.post.postContent)
     } catch (error) {
       setGenerating(false)
-      console.log(error, "There is an error while generating a post")
+      console.log("There is an error while generating a post:", error)
     }
   }
+
   return (
     <div className="h-full overflow-hidden">
       {generating && (

@@ -1,3 +1,4 @@
+import axios from "axios"
 import React, { useCallback, useReducer, useState } from "react"
 
 const PostsContext = React.createContext({})
@@ -48,22 +49,31 @@ export const PostsProvider = ({ children }) => {
 
   const getPosts = useCallback(
     async ({ lastPostDate, getNewerPosts = false }) => {
-      const result = await fetch(`/api/getPosts`, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({ lastPostDate, getNewerPosts }),
-      })
-      const json = await result.json()
-      const postsResult = json.posts || []
-      if (postsResult.length < 5) {
-        setNoMorePosts(true)
+      try {
+        const response = await axios.post(
+          "/api/getPosts",
+          {
+            lastPostDate,
+            getNewerPosts,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        const postsResult = response.data.posts || []
+        if (postsResult.length < 5) {
+          setNoMorePosts(true)
+        }
+        dispatch({
+          type: "addPosts",
+          posts: postsResult,
+        })
+      } catch (error) {
+        // Handle any error that occurs during the request
+        console.error("Error fetching posts:", error)
       }
-      dispatch({
-        type: "addPosts",
-        posts: postsResult,
-      })
     },
     []
   )

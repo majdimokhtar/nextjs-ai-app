@@ -1,16 +1,21 @@
 import { withPageAuthRequired } from "@auth0/nextjs-auth0"
 import Applayout from "../components/Applayout/Applayout"
 import { getAppProps } from "../utils/getAppProps"
+import axios from "axios"
 
 export default function TokenTopUp() {
   const handleClick = async () => {
-    const result = await fetch(`/api/addTokens`, {
-      method: "POST",
-    })
-    const json = await result.json()
-    console.log("RESULT: ", json)
-    window.location.href = json.session.url
+    try {
+      const response = await axios.post("/api/addTokens")
+      const json = response.data
+      console.log("RESULT:", json)
+      window.location.href = json.session.url
+    } catch (error) {
+      // Handle any error that occurs during the request
+      console.error("Error adding tokens:", error)
+    }
   }
+
   return (
     <div className="text-center">
       <h1 className="text-4xl font-bold mb-4">Upgrade Your Token Balance</h1>
