@@ -22,7 +22,7 @@ export default withApiAuthRequired(async function handler(req, res) {
 
   const { topic, keywords } = req.body
 
-  if (!topic || !keywords || topic.length > 80 || keywords.length > 80) {
+  if (!topic || !keywords || topic.length > 70 || keywords.length > 70) {
     res.status(422).end()
     return
   }
@@ -34,7 +34,7 @@ export default withApiAuthRequired(async function handler(req, res) {
     },
     {
       role: "user",
-      content: `Write a brief SEO-friendly blog post about ${topic}, that targets the following comma-separated keywords: ${keywords}. 
+      content: `Write a brief SEO-friendly blog post that generates so fast about ${topic}, that targets the following comma-separated keywords: ${keywords}. 
       The response should be formatted in SEO-friendly HTML, 
       limited to the following HTML tags: p, h1, h2 , ul, li.`,
     },
